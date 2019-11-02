@@ -9,8 +9,16 @@
     "sourceType": "module"
   },
   "rules": {
+    "react/jsx-filename-extension": "off"
   },
   "env": {
     "browser": true
-  }
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
 }
