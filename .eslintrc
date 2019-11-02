@@ -11,8 +11,12 @@
   "rules": {
     "react/jsx-filename-extension": "off"
   },
+  "plugins": [
+    "cypress"
+  ],
   "env": {
-    "browser": true
+    "browser": true,
+    "cypress/globals": true
   },
   "settings": {
     "import/resolver": {
