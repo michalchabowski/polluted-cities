@@ -1,25 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Container, CssBaseline, Typography} from "@material-ui/core"
+import { makeStyles } from '@material-ui/core/styles';
+import CountrySelect from './CountrySelect';
+import CitiesAccordion from './CitiesAccordion';
+
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <CssBaseline />
+      <Container maxWidth="sm" style={{padding: '10px'}}>
+        {/* <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }} /> */}
+        <CountrySelect/>
+        <CitiesAccordion/>
+      </Container>
+    </React.Fragment>
   );
 }
 
