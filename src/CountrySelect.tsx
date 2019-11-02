@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // ⚠️ No support for IE 11
 function countryToFlag(isoCode: string) {
   return typeof String.fromCodePoint !== 'undefined'
-    ? isoCode.toUpperCase().replace(/./g, char => String.fromCodePoint(char.charCodeAt(0) + 127397))
+    ? isoCode.toUpperCase().replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
     : isoCode;
 }
 
@@ -35,12 +35,16 @@ export default function CountrySelect() {
       autoHightlight
       getOptionLabel={(option: CountryType) => option.label}
       renderOption={(option: CountryType) => (
-        <React.Fragment>
+        <>
           <span>{countryToFlag(option.code)}</span>
-          {option.label} ({option.code})
-        </React.Fragment>
+          {option.label}
+          {' '}
+(
+          {option.code}
+)
+        </>
       )}
-      renderInput={params => (
+      renderInput={(params) => (
         <TextField
           {...params}
           label="Choose a country"
