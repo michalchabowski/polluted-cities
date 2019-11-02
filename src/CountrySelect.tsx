@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // ISO 3166-1 alpha-2
 // ⚠️ No support for IE 11
-function countryToFlag(isoCode: string) {
+function countryToFlag(isoCode: string): string {
   return typeof String.fromCodePoint !== 'undefined'
     ? isoCode.toUpperCase().replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
     : isoCode;
@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CountrySelect() {
+const CountrySelect: React.FC = () => {
   const classes = useStyles();
 
   return (
@@ -58,7 +58,9 @@ export default function CountrySelect() {
       )}
     />
   );
-}
+};
+
+export default CountrySelect;
 
 interface CountryType {
   code: string;
