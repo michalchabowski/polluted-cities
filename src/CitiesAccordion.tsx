@@ -6,40 +6,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CircularProgress } from '@material-ui/core';
-import axios from 'axios';
-import { Measurement } from './App';
-
-const cities = [{
-  name: 'Guadalajara',
-  pm10: 45,
-}, {
-  name: 'Rybnik',
-  pm10: 43,
-}, {
-  name: 'Tychy',
-  pm10: 33,
-}, {
-  name: 'Pszczyna',
-  pm10: 23,
-}, {
-  name: 'Żory',
-  pm10: 13,
-}, {
-  name: 'Bielsko-biała',
-  pm10: 8,
-}, {
-  name: 'Zakopane',
-  pm10: 7,
-}, {
-  name: 'Andrychów',
-  pm10: 6,
-}, {
-  name: 'Oświęcim',
-  pm10: 6,
-}, {
-  name: 'Warszawa',
-  pm10: 6,
-}];
+import { Measurement, fetchDescription } from './datasource';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -55,12 +22,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     color: theme.palette.text.secondary,
   },
 }));
-
-const fetchDescription = async (cityName: string) => axios.get('/wikipedia', {
-  params: {
-    cityName,
-  },
-}).then((response) => response.data.query.pages['73208'].extract);
 
 interface CitiesAccordionProps {
   measurements: Measurement[];
@@ -91,7 +52,7 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
   return (
     <div className={classes.root}>
       {measurements.map((measurement) => (
-        <ExpansionPanel expanded={expanded === measurement.city} onChange={handleCityClick(measurement.city)}>
+        <ExpansionPanel expanded={expanded === measurement.city} onChange={handleCityClick(measurement.city)} key={measurement.city}>
           <ExpansionPanelSummary
             expandIcon={loading === measurement.city ? <CircularProgress /> : <ExpandMoreIcon />}
             aria-controls="panel1bh-content"

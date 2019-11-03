@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 import { Container, CssBaseline, CircularProgress } from '@material-ui/core';
-import Axios from 'axios';
-import moment from 'moment';
 import CountrySelect from './CountrySelect';
 import CitiesAccordion from './CitiesAccordion';
+import { fetchCities, Measurement } from './datasource';
 
 const countries = [
   { code: 'PL', label: 'Poland' },
@@ -12,28 +11,6 @@ const countries = [
   { code: 'ES', label: 'Spain' },
   { code: 'FR', label: 'France' },
 ];
-
-const fetchCities = (countryCode: string): Promise<Measurement[]> => Axios.get('https://api.openaq.org/v1/measurements', {
-  params: {
-    country: countryCode,
-    limit: 10,
-    parameter: 'pm10',
-    order_by: 'value',
-    sort: 'desc',
-    page: 1,
-    date_from: moment().subtract(30, 'days').format('YYYY-MM-DD'),
-  },
-}).then((response) => response.data.results);
-
-export interface Measurement {
-  value: number;
-  unit: string;
-  city: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
 
 const App: React.FC = () => {
   const [chosenCountryCode, setChosenCountryCode] = useState<string>('empty');
@@ -57,7 +34,6 @@ const App: React.FC = () => {
     <>
       <CssBaseline />
       <Container maxWidth="sm" style={{ padding: '10px' }}>
-        {/* <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }} /> */}
         <CountrySelect options={countries} onCountryChange={onCountryChange} />
         {loading ? <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} /> : (
           <CitiesAccordion measurements={
