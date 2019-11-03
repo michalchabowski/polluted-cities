@@ -9,7 +9,8 @@
     "sourceType": "module"
   },
   "rules": {
-    "react/jsx-filename-extension": "off"
+    "react/jsx-filename-extension": "off",
+    "@typescript-eslint/explicit-function-return-type": "off"
   },
   "plugins": [
     "cypress"
@@ -24,5 +25,5 @@
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
-  },
+  }
 }
