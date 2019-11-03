@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Container, CssBaseline, CircularProgress } from '@material-ui/core';
 import CountrySelect from './CountrySelect';
@@ -18,19 +18,28 @@ const App: React.FC = () => {
   const [countryCodeToCities, setCountryCodeToCities] = useState<{ [countryCode: string]: Measurement[] }>({ empty: [] });
   const [loading, setLoading] = useState<boolean>(false);
 
+  const fetchCitiesInternal = (countryCode: string) => {
+    if (countryCode === 'empty') return;
+    setLoading(true);
+    fetchCities(countryCode).then((cities) => {
+      setCountryCodeToCities({
+        ...countryCodeToCities,
+        [countryCode]: cities,
+      });
+    }).finally(() => setLoading(false));
+  };
+
   const onCountryChange = (countryCode: string) => {
     setChosenCountryCode(countryCode);
     window.localStorage.setItem('countryCode', countryCode);
     if (!countryCodeToCities[countryCode]) {
-      setLoading(true);
-      fetchCities(countryCode).then((cities) => {
-        setCountryCodeToCities({
-          ...countryCodeToCities,
-          [countryCode]: cities,
-        });
-      }).finally(() => setLoading(false));
+      fetchCitiesInternal(countryCode);
     }
   };
+
+  useEffect(() => {
+    fetchCitiesInternal(initialCountryCode);
+  }, []);
 
   return (
     <>

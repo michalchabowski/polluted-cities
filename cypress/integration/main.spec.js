@@ -25,6 +25,7 @@ describe('Polluted cities app', () => {
     cy.visit('/');
 
     cy.get('[data-cy=country-input]').get('input').should('have.value', 'Poland');
+    cy.get('[data-cy=accordion-Radomsko]');
   });
 
   it('fetches city description', () => {

@@ -31,7 +31,6 @@ interface CountrySelectProps {
 const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange, chosenCountryCode }) => {
   const classes = useStyles();
   const chosenOption = options.find((countryType) => countryType.code === chosenCountryCode);
-  console.log('chosenOption', chosenOption);
 
   return (
     <Autocomplete
