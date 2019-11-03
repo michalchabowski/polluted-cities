@@ -10,7 +10,8 @@
   },
   "rules": {
     "react/jsx-filename-extension": "off",
-    "@typescript-eslint/explicit-function-return-type": "off"
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "react/prop-types": "off"
   },
   "plugins": [
     "cypress"

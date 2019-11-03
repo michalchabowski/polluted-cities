@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CircularProgress } from '@material-ui/core';
 import axios from 'axios';
+import { Measurement } from './App';
 
 const cities = [{
   name: 'Guadalajara',
@@ -61,7 +62,11 @@ const fetchDescription = async (cityName: string) => axios.get('/wikipedia', {
   },
 }).then((response) => response.data.query.pages['73208'].extract);
 
-export default function CitiesAccordion() {
+interface CitiesAccordionProps {
+  measurements: Measurement[];
+}
+
+export default function CitiesAccordion({ measurements }: CitiesAccordionProps) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const [loading, setLoading] = React.useState<string | false>(false);
@@ -85,20 +90,20 @@ export default function CitiesAccordion() {
 
   return (
     <div className={classes.root}>
-      {cities.map((city) => (
-        <ExpansionPanel expanded={expanded === city.name} onChange={handleCityClick(city.name)}>
+      {measurements.map((measurement) => (
+        <ExpansionPanel expanded={expanded === measurement.city} onChange={handleCityClick(measurement.city)}>
           <ExpansionPanelSummary
-            expandIcon={loading === city.name ? <CircularProgress /> : <ExpandMoreIcon />}
+            expandIcon={loading === measurement.city ? <CircularProgress /> : <ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
-            data-cy={`accordion-${city.name}`}
+            data-cy={`accordion-${measurement.city}`}
           >
-            <Typography className={classes.heading}>{city.name}</Typography>
-            <Typography className={classes.secondaryHeading}>{`${city.pm10}um`}</Typography>
+            <Typography className={classes.heading}>{measurement.city}</Typography>
+            <Typography className={classes.secondaryHeading}>{`${measurement.value} ${measurement.unit}`}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails data-cy={`accordion-${city.name}-desc`}>
+          <ExpansionPanelDetails data-cy={`accordion-${measurement.city}-desc`}>
             <Typography>
-              <div dangerouslySetInnerHTML={{ __html: descriptions[city.name] }} />
+              <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>

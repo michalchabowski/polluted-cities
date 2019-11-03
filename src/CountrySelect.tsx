@@ -22,13 +22,18 @@ const useStyles = makeStyles({
   },
 });
 
-const CountrySelect: React.FC = () => {
+interface CountrySelectProps {
+  onCountryChange: (countryCode: string) => void;
+  options: CountryType[];
+}
+
+const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange }) => {
   const classes = useStyles();
 
   return (
     <Autocomplete
     //   style={{ width: auto }}
-      options={countries}
+      options={options}
       classes={{
         option: classes.option,
       }}
@@ -54,8 +59,14 @@ const CountrySelect: React.FC = () => {
             ...params.inputProps,
             autoComplete: 'disabled', // disable autocomplete and autofill
           }}
+          data-cy="country-input"
+          // onKeyPress={(e) => e.keyCode === 13 && onCountryChange()}
         />
       )}
+      onChange={(e, value) => {
+        console.log('changed', value);
+        onCountryChange(value.code);
+      }}
     />
   );
 };
@@ -66,11 +77,3 @@ interface CountryType {
   code: string;
   label: string;
 }
-
-// From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
-const countries = [
-  { code: 'PL', label: 'Poland' },
-  { code: 'DE', label: 'Germany' },
-  { code: 'ES', label: 'Spain' },
-  { code: 'FR', label: 'France' },
-];
