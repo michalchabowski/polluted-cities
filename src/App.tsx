@@ -13,12 +13,14 @@ const countries = [
 ];
 
 const App: React.FC = () => {
-  const [chosenCountryCode, setChosenCountryCode] = useState<string>('empty');
+  const initialCountryCode = window.localStorage.getItem('countryCode') || 'empty';
+  const [chosenCountryCode, setChosenCountryCode] = useState<string>(initialCountryCode);
   const [countryCodeToCities, setCountryCodeToCities] = useState<{ [countryCode: string]: Measurement[] }>({ empty: [] });
   const [loading, setLoading] = useState<boolean>(false);
 
   const onCountryChange = (countryCode: string) => {
     setChosenCountryCode(countryCode);
+    window.localStorage.setItem('countryCode', countryCode);
     if (!countryCodeToCities[countryCode]) {
       setLoading(true);
       fetchCities(countryCode).then((cities) => {
@@ -34,7 +36,7 @@ const App: React.FC = () => {
     <>
       <CssBaseline />
       <Container maxWidth="sm" style={{ padding: '10px' }}>
-        <CountrySelect options={countries} onCountryChange={onCountryChange} />
+        <CountrySelect options={countries} onCountryChange={onCountryChange} chosenCountryCode={chosenCountryCode} />
         {loading ? <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} /> : (
           <CitiesAccordion measurements={
           countryCodeToCities[chosenCountryCode] ? countryCodeToCities[chosenCountryCode] : []

@@ -25,10 +25,13 @@ const useStyles = makeStyles({
 interface CountrySelectProps {
   onCountryChange: (countryCode: string) => void;
   options: CountryType[];
+  chosenCountryCode: string;
 }
 
-const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange }) => {
+const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange, chosenCountryCode }) => {
   const classes = useStyles();
+  const chosenOption = options.find((countryType) => countryType.code === chosenCountryCode);
+  console.log('chosenOption', chosenOption);
 
   return (
     <Autocomplete
@@ -60,11 +63,10 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange 
             autoComplete: 'disabled', // disable autocomplete and autofill
           }}
           data-cy="country-input"
-          // onKeyPress={(e) => e.keyCode === 13 && onCountryChange()}
         />
       )}
+      value={(chosenOption)}
       onChange={(e, value) => {
-        console.log('changed', value);
         onCountryChange(value.code);
       }}
     />
