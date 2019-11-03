@@ -5,9 +5,11 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { CircularProgress } from '@material-ui/core';
+import axios from 'axios';
 
 const cities = [{
-  name: 'Katowice',
+  name: 'Guadalajara',
   pm10: 45,
 }, {
   name: 'Rybnik',
@@ -53,30 +55,50 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
+const fetchDescription = async (cityName: string) => axios.get('/wikipedia', {
+  params: {
+    cityName,
+  },
+}).then((response) => response.data.query.pages['73208'].extract);
+
 export default function CitiesAccordion() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | false>(false);
+  const [loading, setLoading] = React.useState<string | false>(false);
+  const [descriptions, setDescriptions] = React.useState<{[key: string]: string}>({});
 
-  const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleCityClick = (cityName: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+    if (loading === cityName) {
+      setLoading(false);
+    }
+    if (loading === false && !descriptions[cityName]) {
+      setLoading(cityName);
+      fetchDescription(cityName).then((description) => {
+        setDescriptions({
+          ...descriptions,
+          [cityName]: description,
+        });
+      }).finally(() => setLoading(false));
+    }
+    setExpanded(isExpanded ? cityName : false);
   };
 
   return (
     <div className={classes.root}>
       {cities.map((city) => (
-        <ExpansionPanel expanded={expanded === city.name} onChange={handleChange(city.name)}>
+        <ExpansionPanel expanded={expanded === city.name} onChange={handleCityClick(city.name)}>
           <ExpansionPanelSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={loading === city.name ? <CircularProgress /> : <ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
+            data-cy={`accordion-${city.name}`}
           >
             <Typography className={classes.heading}>{city.name}</Typography>
             <Typography className={classes.secondaryHeading}>{`${city.pm10}um`}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails data-cy={`accordion-${city.name}-desc`}>
             <Typography>
-              Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-              maximus est, id dignissim quam.
+              <div dangerouslySetInnerHTML={{ __html: descriptions[city.name] }} />
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
