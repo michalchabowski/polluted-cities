@@ -66,7 +66,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange,
       )}
       value={(chosenOption)}
       onChange={(e, value) => {
-        onCountryChange(value.code);
+        onCountryChange(value ? value.code : 'empty');
       }}
     />
   );

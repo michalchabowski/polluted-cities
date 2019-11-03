@@ -17,16 +17,18 @@ const App: React.FC = () => {
   const [chosenCountryCode, setChosenCountryCode] = useState<string>(initialCountryCode);
   const [countryCodeToCities, setCountryCodeToCities] = useState<{ [countryCode: string]: Measurement[] }>({ empty: [] });
   const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>();
 
   const fetchCitiesInternal = (countryCode: string) => {
     if (countryCode === 'empty') return;
+    setMessage(null);
     setLoading(true);
     fetchCities(countryCode).then((cities) => {
       setCountryCodeToCities({
         ...countryCodeToCities,
         [countryCode]: cities,
       });
-    }).finally(() => setLoading(false));
+    }).catch(() => setMessage('We\'re sorry. Data is unavailable')).finally(() => setLoading(false));
   };
 
   const onCountryChange = (countryCode: string) => {
@@ -41,17 +43,27 @@ const App: React.FC = () => {
     fetchCitiesInternal(initialCountryCode);
   }, []);
 
+  const mainContent = (() => {
+    if (loading) return <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} />;
+    if (message) return <div>{message}</div>;
+    return (
+      <CitiesAccordion measurements={
+        countryCodeToCities[chosenCountryCode] ? countryCodeToCities[chosenCountryCode] : []
+      }
+      />
+    );
+  })();
+
   return (
     <>
       <CssBaseline />
       <Container maxWidth="sm" style={{ padding: '10px' }}>
-        <CountrySelect options={countries} onCountryChange={onCountryChange} chosenCountryCode={chosenCountryCode} />
-        {loading ? <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} /> : (
-          <CitiesAccordion measurements={
-          countryCodeToCities[chosenCountryCode] ? countryCodeToCities[chosenCountryCode] : []
-        }
-          />
-        )}
+        <CountrySelect
+          options={countries}
+          onCountryChange={onCountryChange}
+          chosenCountryCode={chosenCountryCode}
+        />
+        {mainContent}
       </Container>
     </>
   );

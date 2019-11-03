@@ -57,12 +57,12 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
             expandIcon={loading === measurement.city ? <CircularProgress /> : <ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
-            data-cy={`accordion-${measurement.city}`}
+            data-cy={`accordion-item-${measurement.city}`}
           >
             <Typography className={classes.heading}>{measurement.city}</Typography>
             <Typography className={classes.secondaryHeading}>{`${measurement.value} ${measurement.unit}`}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails data-cy={`accordion-${measurement.city}-desc`}>
+          <ExpansionPanelDetails data-cy={`accordion-content-${measurement.city}`}>
             <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
