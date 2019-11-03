@@ -42,7 +42,7 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
       fetchDescription(cityName).then((description) => {
         setDescriptions({
           ...descriptions,
-          [cityName]: description,
+          [cityName]: description || "We're sorry. City description is not available",
         });
       }).finally(() => setLoading(false));
     }
@@ -63,9 +63,7 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
             <Typography className={classes.secondaryHeading}>{`${measurement.value} ${measurement.unit}`}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails data-cy={`accordion-${measurement.city}-desc`}>
-            <Typography>
-              <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
-            </Typography>
+            <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}

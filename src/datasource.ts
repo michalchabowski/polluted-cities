@@ -53,8 +53,20 @@ export interface City {
   };
 }
 
-export const fetchDescription = (city: string): Promise<string> => Axios.get('/wikipedia', {
+// TODO fetch description by city name and geocordinates. City name is not unique across the world.
+export const fetchDescription = (city: string): Promise<string> => Axios.get('https://en.wikipedia.org/w/api.php', {
   params: {
-    city,
+    action: 'query',
+    prop: 'extracts',
+    format: 'json',
+    titles: city,
+    origin: '*',
   },
-}).then((response) => response.data.query.pages['73208'].extract);
+}).then((response) => {
+  const { pages } = response.data.query;
+  const key = Object.keys(pages)[0];
+  if (key === '-1') {
+    return null;
+  }
+  return pages[key].extract;
+});

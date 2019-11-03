@@ -17,12 +17,27 @@ describe('Polluted cities app', () => {
   it('fetches city description', () => {
     cy.visit('/');
     cy.server();
-    cy.route('GET', '/wikipedia?cityName=Guadalajara', 'fixture:guadalajara_wikipedia.json');
+    cy.route('GET', 'https://en.wikipedia.org/w/api.php**', 'fixture:guadalajara_wikipedia.json');
     cy.route('GET', 'https://api.openaq.org/v1/measurements?**page=1', 'fixture:measurements_ES_p1.json');
+    cy.route('GET', 'https://api.openaq.org/v1/measurements?**page=2', 'fixture:measurements_ES_p2.json');
+    cy.route('GET', 'https://api.openaq.org/v1/measurements?**page=3', 'fixture:measurements_ES_p3.json');
+
     cy.get('[data-cy=country-input]').type('Spain{enter}');
 
-    cy.get('[data-cy=accordion-Guadalajara]').as('accordion').click();
+    cy.get('[data-cy=accordion-Murcia]').as('accordion').click();
 
-    cy.get('[data-cy=accordion-Guadalajara-desc]').contains('Pre-Moorish Invasion and settlements');
+    cy.get('[data-cy=accordion-Murcia-desc]').contains('Pre-Moorish Invasion and settlements');
+  });
+
+  it('handles fetching description error by showing message', () => {
+    cy.server();
+    cy.route('GET', 'https://en.wikipedia.org/w/api.php**', 'fixture:wikipedia_no_results.json');
+    cy.route('GET', 'https://api.openaq.org/v1/measurements?**page=1', 'fixture:measurements_PL_p1.json');
+    cy.route('GET', 'https://api.openaq.org/v1/measurements?**page=2', 'fixture:measurements_PL_p2.json');
+    cy.get('[data-cy=country-input]').type('Poland{enter}');
+
+    cy.get('[data-cy=accordion-Radomsko').as('accordion').click();
+
+    cy.get('[data-cy=accordion-Radomsko-desc]').contains('We\'re sorry');
   });
 });
