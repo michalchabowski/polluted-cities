@@ -2,7 +2,20 @@
 import Axios from 'axios';
 import moment from 'moment';
 
-export interface Measurement {
+// difference between city and measurement is slight in structure but huge in semantics.
+// measurement means one value at a time,
+// while city is more of an aggregate of measurements from one place.
+export interface City {
+  worstValue: number;
+  unit: string;
+  name: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+interface Measurement {
   value: number;
   unit: string;
   city: string;
@@ -26,12 +39,18 @@ const fetchMeasurementsPage = (countryCode: string, page: number): Promise<Measu
   },
 }).then((response) => response.data.results);
 
-export const fetchCities = async (countryCode: string): Promise<Measurement[]> => {
-  const fillCities = async (cities: Measurement[], citiesNames: string[], page: number) => {
+// TODO to determine grouping by city we need accurate
+export const fetchCities = async (countryCode: string): Promise<City[]> => {
+  const fillCities = async (cities: City[], citiesNames: string[], page: number) => {
     const measurements = await fetchMeasurementsPage(countryCode, page);
     measurements.forEach((measurement) => {
       if (citiesNames.includes(measurement.city) || cities.length >= DEFAULT_CITIES_COUNT) return;
-      cities.push(measurement);
+      cities.push({
+        unit: measurement.unit,
+        coordinates: measurement.coordinates,
+        worstValue: measurement.value,
+        name: measurement.city,
+      });
       citiesNames.push(measurement.city);
     });
     if (cities.length < DEFAULT_CITIES_COUNT) {
@@ -39,19 +58,11 @@ export const fetchCities = async (countryCode: string): Promise<Measurement[]> =
     }
   };
 
-  const cities: Measurement[] = [];
+  const cities: City[] = [];
   const citiesNames: string[] = [];
   await fillCities(cities, citiesNames, 1);
   return cities;
 };
-
-export interface City {
-  city: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
 
 // TODO fetch description by city name and geocordinates. City name is not unique across the world.
 export const fetchDescription = (city: string): Promise<string> => Axios.get('https://en.wikipedia.org/w/api.php', {

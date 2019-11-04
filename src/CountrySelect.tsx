@@ -28,13 +28,22 @@ const useStyles = makeStyles({
   },
 });
 
+interface CountryType {
+  code: string;
+  label: string;
+}
+
 interface CountrySelectProps {
   onCountryChange: (countryCode: string) => void;
   options: CountryType[];
   chosenCountryCode: string;
 }
 
-const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange, chosenCountryCode }) => {
+const CountrySelect: React.FC<CountrySelectProps> = ({
+  options,
+  onCountryChange,
+  chosenCountryCode,
+}) => {
   const classes = useStyles();
   const chosenOption = options.find((countryType) => countryType.code === chosenCountryCode);
 
@@ -60,6 +69,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange,
       )}
       renderInput={(params) => (
         <TextField
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
           label="Choose a country"
           variant="outlined"
@@ -80,8 +90,3 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange,
 };
 
 export default CountrySelect;
-
-interface CountryType {
-  code: string;
-  label: string;
-}

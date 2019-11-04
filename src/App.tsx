@@ -3,7 +3,7 @@ import './App.css';
 import { Container, CssBaseline, CircularProgress } from '@material-ui/core';
 import CountrySelect from './CountrySelect';
 import CitiesAccordion from './CitiesAccordion';
-import { fetchCities, Measurement } from './datasource';
+import { fetchCities, City } from './datasource';
 
 const countries = [
   { code: 'PL', label: 'Poland' },
@@ -15,7 +15,7 @@ const countries = [
 const App: React.FC = () => {
   const initialCountryCode = window.localStorage.getItem('countryCode') || 'empty';
   const [chosenCountryCode, setChosenCountryCode] = useState<string>(initialCountryCode);
-  const [countryCodeToCities, setCountryCodeToCities] = useState<{ [countryCode: string]: Measurement[] }>({ empty: [] });
+  const [countryCodeToCities, setCountryCodeToCities] = useState<{[countryCode: string]: City[]}>({ empty: [] });
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>();
 
@@ -47,7 +47,7 @@ const App: React.FC = () => {
     if (loading) return <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} />;
     if (message) return <div>{message}</div>;
     return (
-      <CitiesAccordion measurements={
+      <CitiesAccordion cities={
         countryCodeToCities[chosenCountryCode] ? countryCodeToCities[chosenCountryCode] : []
       }
       />

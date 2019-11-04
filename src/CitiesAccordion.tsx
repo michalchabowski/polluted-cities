@@ -6,7 +6,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CircularProgress } from '@material-ui/core';
-import { Measurement, fetchDescription } from './datasource';
+import { City, fetchDescription } from './datasource';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -27,15 +27,27 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
+const ListDescription = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.listDesc}>
+      <Typography className={classes.heading}>
+        The list below contains 10 cities that noted worst air quality
+        measured by pm10 value in last 3 days
+      </Typography>
+    </div>
+  );
+};
+
 interface CitiesAccordionProps {
-  measurements: Measurement[];
+  cities: City[];
 }
 
-export default function CitiesAccordion({ measurements }: CitiesAccordionProps) {
+export default function CitiesAccordion({ cities }: CitiesAccordionProps) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const [loading, setLoading] = React.useState<string | false>(false);
-  const [descriptions, setDescriptions] = React.useState<{[key: string]: string}>({});
+  const [descriptions, setDescriptions] = React.useState<{ [key: string]: string }>({});
 
   const handleCityClick = (cityName: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
     if (loading === cityName) {
@@ -55,20 +67,24 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
 
   return (
     <div className={classes.root}>
-      {measurements.length > 0 && <div className={classes.listDesc}><Typography className={classes.heading}>The list below contains 10 cities that noted worst air quality measured by pm10 value in last 3 days</Typography></div>}
-      {measurements.map((measurement) => (
-        <ExpansionPanel expanded={expanded === measurement.city} onChange={handleCityClick(measurement.city)} key={measurement.city}>
+      {cities.length > 0 && <ListDescription />}
+      {cities.map((city) => (
+        <ExpansionPanel
+          expanded={expanded === city.name}
+          onChange={handleCityClick(city.name)}
+          key={city.name}
+        >
           <ExpansionPanelSummary
-            expandIcon={loading === measurement.city ? <CircularProgress /> : <ExpandMoreIcon />}
+            expandIcon={loading === city.name ? <CircularProgress /> : <ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
-            data-cy={`accordion-item-${measurement.city}`}
+            data-cy={`accordion-item-${city.name}`}
           >
-            <Typography className={classes.heading}>{measurement.city}</Typography>
-            <Typography className={classes.secondaryHeading}>{`${Math.round(measurement.value)} ${measurement.unit}`}</Typography>
+            <Typography className={classes.heading}>{city.name}</Typography>
+            <Typography className={classes.secondaryHeading}>{`${Math.round(city.worstValue)} ${city.unit}`}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails data-cy={`accordion-content-${measurement.city}`}>
-            <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
+          <ExpansionPanelDetails data-cy={`accordion-content-${city.name}`}>
+            <div dangerouslySetInnerHTML={{ __html: descriptions[city.name] }} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}
