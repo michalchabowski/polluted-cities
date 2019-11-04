@@ -12,6 +12,12 @@ const countries = [
   { code: 'FR', label: 'France' },
 ];
 
+const CenteredLoader = () => (
+  <div style={{ textAlign: 'center', width: '100%' }}>
+    <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} />
+  </div>
+);
+
 const App: React.FC = () => {
   const initialCountryCode = window.localStorage.getItem('countryCode') || 'empty';
   const [chosenCountryCode, setChosenCountryCode] = useState<string>(initialCountryCode);
@@ -44,7 +50,9 @@ const App: React.FC = () => {
   }, []);
 
   const mainContent = (() => {
-    if (loading) return <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} />;
+    if (loading) {
+      return <CenteredLoader />;
+    }
     if (message) return <div>{message}</div>;
     return (
       <CitiesAccordion cities={
@@ -57,7 +65,7 @@ const App: React.FC = () => {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="sm" style={{ padding: '10px', textAlign: 'center' }}>
+      <Container maxWidth="sm" style={{ padding: '10px' }}>
         <CountrySelect
           options={countries}
           onCountryChange={onCountryChange}
