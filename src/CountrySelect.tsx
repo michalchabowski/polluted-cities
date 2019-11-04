@@ -20,6 +20,12 @@ const useStyles = makeStyles({
       fontSize: 18,
     },
   },
+  // css override styles. width 100% from MuiInputBase-input caused wrapping clear button
+  // this only shows in production build where css evaluation order changes
+  textInputOverride: {
+    width: 0,
+    flexGrow: 1,
+  },
 });
 
 interface CountrySelectProps {
@@ -38,6 +44,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ options, onCountryChange,
       options={options}
       classes={{
         option: classes.option,
+        input: classes.textInputOverride,
       }}
       autoHightlight
       getOptionLabel={(option: CountryType) => option.label}
