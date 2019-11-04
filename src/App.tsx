@@ -57,7 +57,7 @@ const App: React.FC = () => {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="sm" style={{ padding: '10px' }}>
+      <Container maxWidth="sm" style={{ padding: '10px', textAlign: 'center' }}>
         <CountrySelect
           options={countries}
           onCountryChange={onCountryChange}

@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
+  listDesc: {
+    padding: '20px',
+    textAlign: 'left',
+  },
 }));
 
 interface CitiesAccordionProps {
@@ -51,6 +55,7 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
 
   return (
     <div className={classes.root}>
+      {measurements.length > 0 && <div className={classes.listDesc}><Typography className={classes.heading}>The list below contains 10 cities that noted worst air quality measured by pm10 value in last 3 days</Typography></div>}
       {measurements.map((measurement) => (
         <ExpansionPanel expanded={expanded === measurement.city} onChange={handleCityClick(measurement.city)} key={measurement.city}>
           <ExpansionPanelSummary
@@ -60,7 +65,7 @@ export default function CitiesAccordion({ measurements }: CitiesAccordionProps) 
             data-cy={`accordion-item-${measurement.city}`}
           >
             <Typography className={classes.heading}>{measurement.city}</Typography>
-            <Typography className={classes.secondaryHeading}>{`${measurement.value} ${measurement.unit}`}</Typography>
+            <Typography className={classes.secondaryHeading}>{`${Math.round(measurement.value)} ${measurement.unit}`}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails data-cy={`accordion-content-${measurement.city}`}>
             <div dangerouslySetInnerHTML={{ __html: descriptions[measurement.city] }} />
