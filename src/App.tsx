@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Container, CssBaseline, CircularProgress } from '@material-ui/core';
+import {
+  Container, CssBaseline, CircularProgress, makeStyles,
+} from '@material-ui/core';
 import CountrySelect from './CountrySelect';
 import CitiesAccordion from './CitiesAccordion';
 import { fetchCities, City } from './datasource';
+import store from './store';
 
 const countries = [
   { code: 'PL', label: 'Poland' },
@@ -12,17 +15,34 @@ const countries = [
   { code: 'FR', label: 'France' },
 ];
 
-const CenteredLoader = () => (
-  <div style={{ textAlign: 'center', width: '100%' }}>
-    <CircularProgress data-cy="main-loader" style={{ margin: '20px' }} />
-  </div>
-);
+const useStyles = makeStyles({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '10px',
+  },
+  centeredLoader: {
+    margin: '20px',
+    textAlign: 'center',
+    width: '100%',
+  },
+});
+
+const CenteredLoader = () => {
+  const classes = useStyles();
+  return (
+    <div className={classes.centeredLoader}>
+      <CircularProgress data-cy="main-loader" />
+    </div>
+  );
+};
 
 const App: React.FC = () => {
-  const initialCountryCode = window.localStorage.getItem('countryCode') || 'empty';
-  const [chosenCountryCode, setChosenCountryCode] = useState<string>(initialCountryCode);
+  const classes = useStyles();
+  const initialCountryCode = store.getCountryCode() || 'empty';
+  const [chosenCountryCode, setChosenCountryCode] = useState(initialCountryCode);
   const [countryCodeToCities, setCountryCodeToCities] = useState<{[countryCode: string]: City[]}>({ empty: [] });
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>();
 
   const fetchCitiesInternal = (countryCode: string) => {
@@ -39,7 +59,7 @@ const App: React.FC = () => {
 
   const onCountryChange = (countryCode: string) => {
     setChosenCountryCode(countryCode);
-    window.localStorage.setItem('countryCode', countryCode);
+    store.setCountryCode(countryCode);
     if (!countryCodeToCities[countryCode]) {
       fetchCitiesInternal(countryCode);
     }
@@ -65,7 +85,7 @@ const App: React.FC = () => {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="sm" style={{ padding: '10px' }}>
+      <Container maxWidth="sm" className={classes.container}>
         <CountrySelect
           options={countries}
           onCountryChange={onCountryChange}

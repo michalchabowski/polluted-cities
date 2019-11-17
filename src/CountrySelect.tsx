@@ -47,9 +47,15 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
   const classes = useStyles();
   const chosenOption = options.find((countryType) => countryType.code === chosenCountryCode);
 
+  const renderOption = (option: CountryType) => (
+    <>
+      <span>{countryToFlag(option.code)}</span>
+      {`${option.label} (${option.code})`}
+    </>
+  );
+
   return (
     <Autocomplete
-    //   style={{ width: auto }}
       options={options}
       classes={{
         option: classes.option,
@@ -57,16 +63,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
       }}
       autoHightlight
       getOptionLabel={(option: CountryType) => option.label}
-      renderOption={(option: CountryType) => (
-        <>
-          <span>{countryToFlag(option.code)}</span>
-          {option.label}
-          {' '}
-(
-          {option.code}
-)
-        </>
-      )}
+      renderOption={renderOption}
       renderInput={(params) => (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading

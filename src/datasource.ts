@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import Axios from 'axios';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // difference between city and measurement is slight in structure but huge in semantics.
 // measurement means one value at a time,
@@ -35,7 +35,7 @@ const fetchMeasurementsPage = (countryCode: string, page: number): Promise<Measu
     order_by: 'value',
     sort: 'desc',
     page,
-    date_from: moment().subtract(2, 'days').format('YYYY-MM-DD'),
+    date_from: dayjs().subtract(2, 'day').format('YYYY-MM-DD'),
   },
 }).then((response) => response.data.results);
 
@@ -75,6 +75,9 @@ export const fetchDescription = (city: string): Promise<string> => Axios.get('ht
   },
 }).then((response) => {
   const { pages } = response.data.query;
+  if (!Object.keys(pages).length) {
+    return null;
+  }
   const key = Object.keys(pages)[0];
   if (key === '-1') {
     return null;
